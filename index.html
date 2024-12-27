@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중복된 값 찾기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>중복된 값 찾기 결과</h1>
+    <button id="postfetchData">포스트 데이터 번호생성</button>
+    <!-- 사용자 입력 -->
+    <h2>사용자 입력</h2>
+    <p>쉼표로 구분하여 숫자 6개를 입력하세요.</p>
+    <p>예: 3, 12, 21, 33, 41, 44</p>
+    <input type="text" id="userInput" placeholder="숫자 입력">
+    <button id="userCheck">사용자 번호 확인</button>
+    <p id="userResult">사용자 결과: </p>
+    <div id="result" class="result">결과가 여기에 표시됩니다.</div>
+    <script>
+        document.getElementById('postfetchData').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = "데이터를 가져오는 중...";
+            resultDiv.innerHTML = ""; // 기존 내용을 초기화
+            // 상태 메시지 관리용 DOM 추가
+            const statusMessage = document.createElement('p');
+            statusMessage.textContent = "데이터를 가져오는 중...";
+            resultDiv.appendChild(statusMessage);
+            //입력데이터
+            function generateLottoNumbers() {
+                const numbers = [];
+                while (numbers.length < 6) {
+                    const number = Math.floor(Math.random() * 45) + 1;
+                    if (!numbers.includes(number)) {
+                        numbers.push(number);
+                    }
+                }
+                return numbers.sort((a, b) => a - b);
+            }
+            try{
+                for(let i=0; i<5; i++){
+                    const generatedNumbers = generateLottoNumbers();
+                    console.log(`생성된 번호 (${i + 1}번째 요청):`, generatedNumbers);
+                    const response = await fetch('/check', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ numbers: generatedNumbers }),
+                    });
+                    const data = await response.json();
+                   // 결과 표시
+                    const requestResult = document.createElement('div');
+                    requestResult.innerHTML = `<h4>${i}번째 응답:</h4>`;
+                    if (data.length > 0) {
+                        data.forEach(({ row, key }) => {
+                            const rowText = document.createElement('p');
+                            rowText.textContent = `중복됨: ${row.join(", ")} | 회차: ${key}`;
+                            requestResult.appendChild(rowText);
+                        });
+                    } else {
+                        const noData = document.createElement('p');
+                        noData.textContent = `중복된 데이터가 없습니다. ${generatedNumbers.join(", ")}`;
+                        requestResult.appendChild(noData);
+                    }
+                    resultDiv.appendChild(requestResult);
+                }
+                // 상태 메시지 업데이트
+                statusMessage.textContent = "번호 생성 완료!";
+            } catch (error) {
+                resultDiv.textContent = "데이터를 가져오는 중 오류가 발생했습니다.";
+                console.error(error);
+            } 
+        });
+
+        document.getElementById('userCheck').addEventListener('click', async () => {
+            const userInput = document.getElementById('userInput').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = "데이터를 가져오는 중...";
+            resultDiv.innerHTML = ""; // 기존 내용을 초기화
+            // 상태 메시지 관리용 DOM 추가
+            const statusMessage = document.createElement('p');
+            statusMessage.textContent = "데이터를 가져오는 중...";
+            resultDiv.appendChild(statusMessage)
+            try {
+                // 입력값을 쉼표로 구분하여 숫자로 변환
+                const numbers = userInput.split(',').map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
+                // 입력값 유효성 검사 (숫자 6개 확인)
+                if (numbers.length !== 6) {
+                    resultDiv.textContent = "유효한 숫자 6개를 쉼표로 구분하여 입력해주세요.";
+                    return;
+                }
+                // 오름차순 정렬
+                numbers.sort((a, b) => a - b);
+                console.log("사용자 입력 숫자:", numbers);
+                // 서버에 데이터 전송
+                const response = await fetch('/check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ numbers }),
+                });
+                const data = await response.json();
+                if (data.length > 0) {
+                    data.forEach(({ row, key }) => {
+                        const resultText = document.createElement('p');
+                        resultText.textContent = `중복됨: ${row.join(", ")} | 회차: ${key}`;
+                        resultDiv.appendChild(resultText);
+                    });
+                } else {
+                    const noData = document.createElement('p');
+                    noData.textContent = `중복된 데이터가 없습니다. ${numbers.join(", ")}`;
+                    resultDiv.appendChild(noData);
+                }
+                // 상태 메시지 업데이트
+                statusMessage.textContent = "번호 생성 완료!";
+            } catch (error) {
+                resultDiv.textContent = "데이터를 비교하는 중 오류가 발생했습니다.";
+                console.error(error);
+            }
+            // 상태 메시지 업데이트
+            statusMessage.textContent = "번호 확인 완료!";
+        });   
+    </script>
+</body>
+</html>
