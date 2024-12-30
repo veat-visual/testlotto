@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <h1>중복된 값 찾기 결과</h1>
+    <h1>중복된 값 찾기 결과 v1.0</h1>
     <button id="postfetchData">포스트 데이터 번호생성</button>
     <!-- 사용자 입력 -->
     <h2>사용자 입력</h2>
@@ -49,10 +49,10 @@
                 return numbers.sort((a, b) => a - b);
             }
             try{
-                for(let i=0; i<5; i++){
+                for(let i=1; i<=5; i++){
                     const generatedNumbers = generateLottoNumbers();
                     console.log(`생성된 번호 (${i + 1}번째 요청):`, generatedNumbers);
-                    const response = await fetch('/check', {
+                    const response = await fetch('/check', {//https://lottonumbers-rjvsqrqm0-veat-visuals-projects.vercel.app/check
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ numbers: generatedNumbers }),

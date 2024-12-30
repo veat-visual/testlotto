@@ -10,6 +10,11 @@ const sheet = workbook.Sheets[sheetName];
 const jsonData = xlsx.utils.sheet_to_json(sheet); // 엑셀 데이터를 JSON으로 변환
 // 미들웨어 설정
 app.use(express.json()); // JSON 요청 본문 파싱
+
+//추가
+const cors = require('cors');
+app.use(cors());
+
 //엑셀필터데이터
 const data = jsonData.slice(2).map(row => {
     return ["__EMPTY_12", "__EMPTY_13", "__EMPTY_14", "__EMPTY_15", "__EMPTY_16", "__EMPTY_17"]
