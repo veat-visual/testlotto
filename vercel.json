@@ -1,8 +1,10 @@
 {
     "builds": [
-      { "src": "server5.js", "use": "@vercel/node" }
+      { "src": "server5.js", "use": "@vercel/node" },
+      { "src": "index.html", "use": "@vercel/static" }
     ],
     "routes": [
+      { "src": "/", "dest": "/index.html" },
       { "src": "/check", "dest": "/server5.js" }
     ]
   }
