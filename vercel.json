@@ -6,8 +6,5 @@
     "routes": [
       { "src": "/", "dest": "/index.html" },
       { "src": "/check", "dest": "/server5.js" }
-    ],
-    "files": [
-    "lotto.xlsx"
-  ]
+    ]
 }
