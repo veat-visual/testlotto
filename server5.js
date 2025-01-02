@@ -4,7 +4,11 @@ const app = express();
 const port = 3000;
 const xlsx = require('xlsx');
 // 엑셀 파일 읽기
-const workbook = xlsx.readFile('lotto.xlsx');
+const filePath = path.join(__dirname, 'lotto.xlsx'); // 현재 디렉토리 기준으로 절대 경로 생성
+const workbook = xlsx.readFile(filePath); // 절대 경로 사용
+
+//const workbook = xlsx.readFile('lotto.xlsx');
+
 const sheetName = workbook.SheetNames[0]; // 첫 번째 시트 이름
 const sheet = workbook.Sheets[sheetName];
 const jsonData = xlsx.utils.sheet_to_json(sheet); // 엑셀 데이터를 JSON으로 변환
