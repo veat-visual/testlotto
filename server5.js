@@ -5,13 +5,21 @@ const port = 3000;
 const xlsx = require('xlsx');
 // 엑셀 파일 읽기
 const filePath = path.join(__dirname, 'lotto.xlsx'); // 현재 디렉토리 기준으로 절대 경로 생성
+const filePath2 = path.join(__dirname, 'lotto2.xlsx');
 const workbook = xlsx.readFile(filePath); // 절대 경로 사용
-
-//const workbook = xlsx.readFile('lotto.xlsx');
-
+const workbook2 = xlsx.readFile(filePath2);
 const sheetName = workbook.SheetNames[0]; // 첫 번째 시트 이름
+const sheetName2 = workbook2.SheetNames[0];
 const sheet = workbook.Sheets[sheetName];
-const jsonData = xlsx.utils.sheet_to_json(sheet); // 엑셀 데이터를 JSON으로 변환
+const sheet2 = workbook2.Sheets[sheetName2];
+//const jsonData = xlsx.utils.sheet_to_json(sheet); // 엑셀 데이터를 JSON으로 변환
+//const jsonData2 = xlsx.utils.sheet_to_json(sheet2);
+
+const jsonData = [
+  ...xlsx.utils.sheet_to_json(sheet).map(row => ({ ...row, source: 'file1 1-600' })),  // 첫 번째 파일
+  ...xlsx.utils.sheet_to_json(sheet2).map(row => ({ ...row, source: 'file2 601-today' })) // 두 번째 파일
+];
+
 // 미들웨어 설정
 app.use(express.json()); // JSON 요청 본문 파싱
 
@@ -45,7 +53,6 @@ const findDuplicates = (sendData) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-
 //포스트방식 API 요청: 중복 데이터 제공
 app.post('/check', (req, res) => {
   const sendData = req.body.numbers; // 클라이언트에서 보낸 데이터

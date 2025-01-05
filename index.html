@@ -21,7 +21,7 @@
     </style>
 </head>
 <body>
-    <h1>중복된 값 찾기 결과 v1.04</h1>
+    <h1>중복된 값 찾기 결과 v1.05</h1>
     <button id="postfetchData">포스트 데이터 번호생성</button>
     <!-- 사용자 입력 -->
     <h2>사용자 입력</h2>
@@ -32,8 +32,19 @@
     <p id="userResult">사용자 결과: </p>
     <div id="result" class="result">결과가 여기에 표시됩니다.</div>
     <script>
+        const resultDiv = document.getElementById('result');
+        function generateLottoNumbers() {
+            const numbers = [];
+            while (numbers.length < 6) {
+                const number = Math.floor(Math.random() * 45) + 1;
+                if (!numbers.includes(number)) {
+                    numbers.push(number);
+                }
+            }
+            return numbers.sort((a, b) => a - b);
+        }
+        
         document.getElementById('postfetchData').addEventListener('click', async () => {
-            const resultDiv = document.getElementById('result');
             resultDiv.classList.remove('highlight');
             resultDiv.textContent = "데이터를 가져오는 중...";
             resultDiv.innerHTML = ""; // 기존 내용을 초기화
@@ -42,16 +53,6 @@
             statusMessage.textContent = "데이터를 가져오는 중...";
             resultDiv.appendChild(statusMessage);
             //입력데이터
-            function generateLottoNumbers() {
-                const numbers = [];
-                while (numbers.length < 6) {
-                    const number = Math.floor(Math.random() * 45) + 1;
-                    if (!numbers.includes(number)) {
-                        numbers.push(number);
-                    }
-                }
-                return numbers.sort((a, b) => a - b);
-            }
             try{
                 for(let i=1; i<=5; i++){
                     const generatedNumbers = generateLottoNumbers();
@@ -83,6 +84,7 @@
                 // 상태 메시지 업데이트
                 statusMessage.textContent = "번호 생성 완료!";
             } catch (error) {
+                console.log('Error: ', error);
                 resultDiv.textContent = "데이터를 가져오는 중 오류가 발생했습니다.";
                 console.error(error);
             } 
@@ -90,7 +92,6 @@
 
         document.getElementById('userCheck').addEventListener('click', async () => {
             const userInput = document.getElementById('userInput').value;
-            const resultDiv = document.getElementById('result');
             resultDiv.textContent = "데이터를 가져오는 중...";
             resultDiv.innerHTML = ""; // 기존 내용을 초기화
             // 상태 메시지 관리용 DOM 추가
