@@ -12,8 +12,6 @@ const sheetName = workbook.SheetNames[0]; // 첫 번째 시트 이름
 const sheetName2 = workbook2.SheetNames[0];
 const sheet = workbook.Sheets[sheetName];
 const sheet2 = workbook2.Sheets[sheetName2];
-//const jsonData = xlsx.utils.sheet_to_json(sheet); // 엑셀 데이터를 JSON으로 변환
-//const jsonData2 = xlsx.utils.sheet_to_json(sheet2);
 
 const jsonData = [
   ...xlsx.utils.sheet_to_json(sheet).map(row => ({ ...row, source: 'file1 1-600' })),  // 첫 번째 파일
